@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:blue_tine_web_components/interfaces/data/enums/routine_status.dart';
@@ -7,7 +6,7 @@ import 'package:blue_tine_web_components/interfaces/data/i_plugin_routine_step_d
 import 'package:hive_flutter/adapters.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-abstract class IPluginRoutineData<Plugin> with  HiveObjectMixin {
+abstract class IPluginRoutineData with HiveObjectMixin {
   //region VARIABLES
   String get name => routine.name;
 
@@ -38,7 +37,6 @@ abstract class IPluginRoutineData<Plugin> with  HiveObjectMixin {
 
   IPluginRoutineData(this.routine, {this.status = RoutineStatus.open, this.rating = 0, this.comment}) : assert(rating >= 0 && rating <= 5);
 
-  //region METHODS
   //TODO: Implement checks that these function throw errors when trying to start/stop/abort when the status is wrong
   void start() {
     startTime = DateTime.now();
@@ -56,18 +54,18 @@ abstract class IPluginRoutineData<Plugin> with  HiveObjectMixin {
   }
 
   void test({int year = 2024, int month = 08, int day = 01}) {
-    final Random random =  Random();
+    final Random random = Random();
 
     final testDate = DateTime.now().subtract(Duration(days: day));
 
     startTime = testDate;
     endTime = testDate.add(Duration(minutes: random.nextInt(6)));
     status = RoutineStatus.finished;
-    
+
     rating = random.nextInt(6).toDouble();
   }
 
+  //region METHODS
   Duration _calcDuration() => stepsData.fold(Duration.zero, (duration, step) => duration + step.duration);
-
 //endregion
 }

@@ -6,9 +6,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'get_up_routine_step_data.g.dart';
 
-@HiveType(typeId: 24)
-class GetUpRoutineStepData extends IPluginRoutineStepData {
-  GetUpRoutineStepData(super.step, {super.skipped});
+@HiveType(typeId: 25)
+class GetUpRoutineStepData extends IPluginRoutineStepData{
+  GetUpRoutineStepData(super.step, {super.skipped });
 
   factory GetUpRoutineStepData.fromMap(Map<String, dynamic> data) {
     GetUpRoutineStepData stepData = GetUpRoutineStepData(GetUpRoutineStep.fromMap(data['step']));
@@ -21,4 +21,5 @@ class GetUpRoutineStepData extends IPluginRoutineStepData {
 
     return stepData;
   }
+
 }

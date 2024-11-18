@@ -8,7 +8,7 @@ part of 'get_up_routine_data.dart';
 
 class GetUpRoutineDataAdapter extends TypeAdapter<GetUpRoutineData> {
   @override
-  final int typeId = 22;
+  final int typeId = 23;
 
   @override
   GetUpRoutineData read(BinaryReader reader) {
@@ -24,7 +24,8 @@ class GetUpRoutineDataAdapter extends TypeAdapter<GetUpRoutineData> {
     )
       ..startTime = fields[2] as DateTime
       ..endTime = fields[3] as DateTime
-      ..comment = fields[5] as String?;
+      ..comment = fields[5] as String?
+      ..stepsData = (fields[6] as List).cast<IPluginRoutineStepData>();
   }
 
   @override

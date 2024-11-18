@@ -1,9 +1,9 @@
 import 'package:blue_tine_web_components/interfaces/data/i_plugin_routine_step.dart';
-import 'package:blue_tine_web_components/utils/_utils.export.dart';
+import 'package:blue_tine_web_components/utils/format_util.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-abstract class IPluginRoutine with  HiveObjectMixin {
+abstract class IPluginRoutine with HiveObjectMixin {
   //region VARIABLES
   @HiveField(0, defaultValue: 'Routine Name')
   final String name;
@@ -33,7 +33,6 @@ abstract class IPluginRoutine with  HiveObjectMixin {
 
   //region METHODS
   Duration _calcDuration() => steps.fold(Duration.zero, (duration, step) => duration + step.duration);
-
   //endregion
 
 }

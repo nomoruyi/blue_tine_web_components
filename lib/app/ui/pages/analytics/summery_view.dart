@@ -1,4 +1,4 @@
-import 'package:blue_tine_web_components/app/ui/widgets/_widgets.export.dart';
+import 'package:blue_tine_web_components/app/ui/widgets/blue_container.dart';
 import 'package:blue_tine_web_components/plugins/plugin.enum.dart';
 import 'package:flutter/material.dart';
 

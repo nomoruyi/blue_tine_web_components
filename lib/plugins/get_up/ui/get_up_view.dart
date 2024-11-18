@@ -1,23 +1,27 @@
-import 'package:blue_tine_web_components/app/cubits/routine/routine_cubit.dart';
-import 'package:blue_tine_web_components/interfaces/ui/i_plugin_stateful_widget.dart';
+import 'dart:convert';
+
+import 'package:blue_tine_web_components/interfaces/controller/plugin_controller.dart';
+import 'package:blue_tine_web_components/plugins/get_up/data/get_up_data.dart';
+import 'package:blue_tine_web_components/plugins/get_up/data/get_up_routine.dart';
 import 'package:blue_tine_web_components/plugins/get_up/data/get_up_routine_data.dart';
-import 'package:blue_tine_web_components/plugins/get_up/get_up_main.dart';
+import 'package:blue_tine_web_components/plugins/get_up/get_up.dart';
+import 'package:blue_tine_web_components/plugins/plugin.enum.dart';
 import 'package:blue_tine_web_components/plugins/plugin_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class GetUpView extends IPluginStatefulWidget {
-  const GetUpView(super.plugin, {super.key});
+class GetUpView extends StatefulWidget {
+  const GetUpView({super.key});
 
   @override
-  State<GetUpView> createState() => _PluginWebViewState();
+  State<GetUpView> createState() => _PluginGetUpState();
 }
 
-class _PluginWebViewState extends State<GetUpView> {
-  // final WebViewData data = WebViewData(Plugin.webView, description: 'A routine for waking up');
-  //
-  final GetUpRoutineData routineData = GetUpRoutineData(GetUpP.getUpRoutine);
-  final PluginController _routineController = PluginManager.plugins[GetUpP]!;
+class _PluginGetUpState extends State<GetUpView> {
+  final PluginController routineCubit = PluginManager.controller(PluginEnum.getUp);
+  final GetUpData data = GetUpData(PluginEnum.getUp, description: 'A routine for waking up');
+
+  final GetUpRoutine routine = GetUp.getUpRoutine;
 
   WebViewController controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -31,29 +35,19 @@ class _PluginWebViewState extends State<GetUpView> {
         onHttpError: (HttpResponseError error) {},
         onWebResourceError: (WebResourceError error) {},
         onNavigationRequest: (NavigationRequest request) {
-          if (request.url.startsWith('http://localhost:3000/')) {
-            return NavigationDecision.navigate;
-          }
+          if (request.url.startsWith('http://localhost:3000/')) return NavigationDecision.navigate;
+
           return NavigationDecision.prevent;
         },
       ),
     )
-    ..loadRequest(Uri.parse('http://localhost:3000/'));
+    ..loadRequest(Uri.parse('https://www.reddit.com'));
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    controller.addJavaScriptChannel('finishRoutineChannel', onMessageReceived: finishRoutine);
-  }
-
-  void finishRoutine(JavaScriptMessage message) {
-    final GetUpRoutineData routineData = GetUpRoutineData.fromMessage(message);
-
-    _routineController.saveRoutine(routineData).then((_) {
-      Navigator.of(context).popUntil((s) => s.settings.name == '/');
-    });
+    controller.addJavaScriptChannel('finishRoutineChannel', onMessageReceived: (message) => finishRoutine(context, message));
   }
 
   @override
@@ -61,12 +55,20 @@ class _PluginWebViewState extends State<GetUpView> {
     return Scaffold(
       appBar: AppBar(
         title: ListTile(
-          title: Text(routineData.routine.name),
+          title: Text(data.name),
         ),
       ),
       body: WebViewWidget(controller: controller),
     );
   }
 
+  void finishRoutine(BuildContext context, JavaScriptMessage message) {
+    final GetUpRoutineData routineData = GetUpRoutineData.fromMap(json.decode(message.message));
 
+    routineCubit.saveRoutine(routineData).then((_) {
+      if (context.mounted) {
+        Navigator.of(context).popUntil((s) => s.settings.name == '/');
+      }
+    });
+  }
 }

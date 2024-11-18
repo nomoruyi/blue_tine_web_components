@@ -8,7 +8,7 @@ part of 'get_up_routine_step.dart';
 
 class GetUpRoutineStepAdapter extends TypeAdapter<GetUpRoutineStep> {
   @override
-  final int typeId = 23;
+  final int typeId = 24;
 
   @override
   GetUpRoutineStep read(BinaryReader reader) {
@@ -22,7 +22,9 @@ class GetUpRoutineStepAdapter extends TypeAdapter<GetUpRoutineStep> {
       duration: fields[2] == null
           ? const Duration(minutes: 5)
           : fields[2] as Duration,
-    );
+    )
+      ..isActive = fields[3] == null ? true : fields[3] as bool
+      ..autoNext = fields[4] == null ? false : fields[4] as bool;
   }
 
   @override

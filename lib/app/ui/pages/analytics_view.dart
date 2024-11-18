@@ -1,17 +1,17 @@
-import 'package:blue_tine_web_components/app/cubits/routine/routine_cubit.dart';
-import 'package:blue_tine_web_components/app/ui/base/pages/analysis/plugin_analysis_view.dart';
-import 'package:blue_tine_web_components/app/ui/base/pages/analysis/summery_view.dart';
+import 'package:blue_tine_web_components/interfaces/controller/plugin_controller.dart';
+import 'package:blue_tine_web_components/app/ui/pages/analytics/plugin_analytics_view.dart';
+import 'package:blue_tine_web_components/app/ui/pages/analytics/summery_view.dart';
 import 'package:blue_tine_web_components/plugins/plugin_manager.dart';
 import 'package:flutter/material.dart';
 
-class AnalysisView extends StatefulWidget {
-  const AnalysisView({super.key});
+class AnalyticsView extends StatefulWidget {
+  const AnalyticsView({super.key});
 
   @override
-  State<AnalysisView> createState() => _AnalysisViewState();
+  State<AnalyticsView> createState() => _AnalyticsViewState();
 }
 
-class _AnalysisViewState extends State<AnalysisView> {
+class _AnalyticsViewState extends State<AnalyticsView> {
   List<Widget> tabs = [];
   List<Widget> pages = [];
 
@@ -32,17 +32,17 @@ class _AnalysisViewState extends State<AnalysisView> {
           child: Text('Summery', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900)),
         ),
       ),
-      ...PluginManager.plugins.entries.where((entry) => entry.value.isEnabled).map((MapEntry<Type, PluginController> p) => Tab(
+      ...PluginManager.installedPlugins.map(( PluginController p) => Tab(
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(p.value.plugin.name.toUpperCase(), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900))))),
+              child: Text(p.plugin.name.toUpperCase(), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900))))),
     ];
   }
 
   List<Widget> getPages() {
     return [
       const SummeryView(),
-      ...PluginManager.plugins.entries.where((entry) => entry.value.isEnabled).map((MapEntry<Type, PluginController> p) => PluginAnalysisView(p.key)),
+      ...PluginManager.installedPlugins.map(( PluginController p) => PluginAnalyticsView(p.plugin)),
     ];
   }
 
@@ -52,7 +52,7 @@ class _AnalysisViewState extends State<AnalysisView> {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Analysis', style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900)),
+          title: Text('Analytics', style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900)),
           bottom: TabBar(
             splashFactory: NoSplash.splashFactory,
             physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),

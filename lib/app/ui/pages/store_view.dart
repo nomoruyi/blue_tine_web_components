@@ -1,4 +1,4 @@
-import 'package:blue_tine_web_components/app/cubits/routine/routine_cubit.dart';
+import 'package:blue_tine_web_components/interfaces/controller/plugin_controller.dart';
 import 'package:blue_tine_web_components/app/ui/widgets/plugin_store_card.dart';
 import 'package:blue_tine_web_components/plugins/plugin_manager.dart';
 import 'package:flutter/material.dart';
@@ -11,18 +11,8 @@ class StoreView extends StatefulWidget {
 }
 
 class _StoreViewState extends State<StoreView> {
-  final List<PluginController> pluginLoadingFunctions = [];
+  final List<PluginController> pluginLoadingFunctions = PluginManager.registeredPlugins;
 
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    for(PluginController controller in PluginManager.plugins.values) {
-      pluginLoadingFunctions.add(controller);
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +24,7 @@ class _StoreViewState extends State<StoreView> {
         child: ListView.separated(
           itemCount: pluginLoadingFunctions.length,
           itemBuilder: (context, index) {
-            return PluginStoreCard(PluginManager.plugins.values.toList()[index].plugin, pluginLoadingFunctions[index]);
+            return PluginStoreCard( pluginLoadingFunctions[index]);
           },
           separatorBuilder: (context, index) {
             return const Divider(height: 4.0, thickness: 0, color: Colors.transparent);

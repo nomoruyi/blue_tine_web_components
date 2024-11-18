@@ -1,22 +1,15 @@
-import 'dart:convert';
-
 import 'package:blue_tine_web_components/interfaces/data/enums/routine_status.dart';
 import 'package:blue_tine_web_components/interfaces/data/i_plugin_routine.dart';
 import 'package:blue_tine_web_components/interfaces/data/i_plugin_routine_data.dart';
-import 'package:blue_tine_web_components/plugins/get_up/data/get_up_routine.dart';
+import 'package:blue_tine_web_components/interfaces/data/i_plugin_routine_step_data.dart';
 import 'package:blue_tine_web_components/plugins/get_up/data/get_up_routine_step_data.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:webview_flutter_platform_interface/src/types/javascript_message.dart';
 
 part 'get_up_routine_data.g.dart';
 
-@HiveType(typeId: 22)
-class GetUpRoutineData extends IPluginRoutineData {
-  GetUpRoutineData(super.routine, {super.status = RoutineStatus.open, super.rating = 0});
-
-  @override
-  // TODO: implement props
-  List<Object?> get props => [routine];
+@HiveType(typeId: 23)
+class GetUpRoutineData extends IPluginRoutineData{
+  GetUpRoutineData( super.routine, { super.status = RoutineStatus.open, super.rating = 0});
 
   factory GetUpRoutineData.fromMap(Map<String, dynamic> data) {
     GetUpRoutineData routineData = GetUpRoutineData(data['data']);
@@ -32,7 +25,4 @@ class GetUpRoutineData extends IPluginRoutineData {
     return routineData;
   }
 
-
-
-  static GetUpRoutineData fromMessage(JavaScriptMessage message) => GetUpRoutineData.fromMap(json.decode(message.message));
 }
