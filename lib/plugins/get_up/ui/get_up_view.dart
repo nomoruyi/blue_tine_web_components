@@ -27,27 +27,41 @@ class _PluginGetUpState extends State<GetUpView> {
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..setNavigationDelegate(
       NavigationDelegate(
-        onProgress: (int progress) {
-          // Update loading bar.
-        },
+        onProgress: (int progress) {},
         onPageStarted: (String url) {},
         onPageFinished: (String url) {},
         onHttpError: (HttpResponseError error) {},
         onWebResourceError: (WebResourceError error) {},
         onNavigationRequest: (NavigationRequest request) {
-          if (request.url.startsWith('http://localhost:3000/')) return NavigationDecision.navigate;
+          if (request.url.startsWith('http://localhost:3000/')) {
+            return NavigationDecision.navigate;
+          }
 
           return NavigationDecision.prevent;
         },
       ),
     )
-    ..loadRequest(Uri.parse('https://www.reddit.com'));
+    ..loadRequest(Uri.parse('http://localhost:3000/'));
+
+  void finishRoutine(BuildContext context, JavaScriptMessage message) {
+    Map<String, dynamic> decodedMessage = json.decode(message.message);
+    final GetUpRoutineData routineData = GetUpRoutineData.fromMap(decodedMessage);
+
+    routineCubit.saveRoutine(routineData).then((_) {
+      if (context.mounted) {
+        Navigator.of(context).popUntil((s) => s.settings.name == '/');
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
-    controller.addJavaScriptChannel('finishRoutineChannel', onMessageReceived: (message) => finishRoutine(context, message));
+    controller.addJavaScriptChannel(
+      'finishRoutineChannel',
+      onMessageReceived: (message) => finishRoutine(context, message),
+    );
   }
 
   @override
@@ -60,15 +74,5 @@ class _PluginGetUpState extends State<GetUpView> {
       ),
       body: WebViewWidget(controller: controller),
     );
-  }
-
-  void finishRoutine(BuildContext context, JavaScriptMessage message) {
-    final GetUpRoutineData routineData = GetUpRoutineData.fromMap(json.decode(message.message));
-
-    routineCubit.saveRoutine(routineData).then((_) {
-      if (context.mounted) {
-        Navigator.of(context).popUntil((s) => s.settings.name == '/');
-      }
-    });
   }
 }
