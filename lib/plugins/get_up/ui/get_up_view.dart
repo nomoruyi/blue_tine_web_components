@@ -27,11 +27,6 @@ class _PluginGetUpState extends State<GetUpView> {
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..setNavigationDelegate(
       NavigationDelegate(
-        onProgress: (int progress) {},
-        onPageStarted: (String url) {},
-        onPageFinished: (String url) {},
-        onHttpError: (HttpResponseError error) {},
-        onWebResourceError: (WebResourceError error) {},
         onNavigationRequest: (NavigationRequest request) {
           if (request.url.startsWith('http://localhost:3000/')) {
             return NavigationDecision.navigate;
